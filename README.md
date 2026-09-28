@@ -352,3 +352,4 @@ npm test
 
 1. **Preview Sandboxing Limitation**: Declarative preview rendering prevents remote arbitrary code execution. Complex third-party binary canvas components should be previewed inside sandboxed iframes without `allow-same-origin`.
 2. **Database Recovery Plan**: In the event of schema drifts or connection interruptions, run `npx prisma db push` to reconcile PostgreSQL state, followed by `npm run seed` to re-establish test baselines.
+"# Tech-Inject-Design" 
