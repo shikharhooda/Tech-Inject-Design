@@ -1,61 +1,75 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-const ALLOWED_ORIGIN_PATTERNS = [
-  /^http:\/\/localhost(:\d+)?$/,
-  /^https?:\/\/127\.0\.0\.1(:\d+)?$/,
+const ALLOWED_ORIGINS = [
+  "https://tech-inject-design-catalogue.vercel.app",
+  // Add your Admin Vercel URL here if it is different.
+  // "https://your-admin-url.vercel.app",
+
+  // Local development
+  "http://localhost:3000",
+  "http://localhost:3001",
 ];
 
 export function middleware(req: NextRequest) {
-  const origin = req.headers.get('origin');
-  let allowOrigin = '';
+  const origin = req.headers.get("origin");
 
-  if (origin) {
-    const isAllowed = ALLOWED_ORIGIN_PATTERNS.some((pattern) => pattern.test(origin));
-    if (isAllowed || process.env.NODE_ENV === 'development') {
-      allowOrigin = origin;
-    }
-  }
+  const isAllowedOrigin =
+    !!origin && ALLOWED_ORIGINS.includes(origin);
 
-  // Preflight OPTIONS requests
-  if (req.method === 'OPTIONS') {
-    const preflightHeaders: Record<string, string> = {
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers':
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-license-key',
-      'Access-Control-Max-Age': '86400',
-    };
+  // Handle browser preflight requests
+  if (req.method === "OPTIONS") {
+    const headers = new Headers();
 
-    if (allowOrigin) {
-      preflightHeaders['Access-Control-Allow-Origin'] = allowOrigin;
-      preflightHeaders['Access-Control-Allow-Credentials'] = 'true';
+    headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    );
+
+    headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, x-license-key"
+    );
+
+    headers.set("Access-Control-Max-Age", "86400");
+
+    if (isAllowedOrigin) {
+      headers.set("Access-Control-Allow-Origin", origin);
+      headers.set("Access-Control-Allow-Credentials", "true");
     }
 
     return new NextResponse(null, {
       status: 204,
-      headers: preflightHeaders,
+      headers,
     });
   }
 
-  // Normal requests
   const response = NextResponse.next();
 
-  if (allowOrigin) {
-    response.headers.set('Access-Control-Allow-Origin', allowOrigin);
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
+  if (isAllowedOrigin) {
+    response.headers.set(
+      "Access-Control-Allow-Origin",
+      origin
+    );
+
+    response.headers.set(
+      "Access-Control-Allow-Credentials",
+      "true"
+    );
   }
 
   response.headers.set(
-    'Access-Control-Allow-Methods',
-    'GET, POST, PUT, PATCH, DELETE, OPTIONS'
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
   );
+
   response.headers.set(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, x-license-key'
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, x-license-key"
   );
 
   return response;
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: "/api/:path*",
 };
