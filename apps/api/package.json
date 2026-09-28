@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
-    "build": "next build",
-    "start": "next start -p 3001",
-    "lint": "next lint"
-  },
+  "dev": "next dev -p 3001",
+  "build": "prisma generate --schema=../../prisma/schema.prisma && next build",
+  "start": "next start -p 3001",
+  "lint": "next lint"
+},
   "dependencies": {
     "@prisma/client": "^5.21.1",
     "@tech-inject/types": "*",
