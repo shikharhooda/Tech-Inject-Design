@@ -10,11 +10,7 @@ export function jsonSuccess<T>(
     { success: true, data },
     {
       status,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': 'true',
-        ...headers,
-      },
+      headers,
     }
   );
 }
@@ -29,11 +25,7 @@ export function jsonError(
     { success: false, error: message, details },
     {
       status,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': 'true',
-        ...headers,
-      },
+      headers,
     }
   );
 }
