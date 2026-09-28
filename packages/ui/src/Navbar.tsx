@@ -8,6 +8,7 @@ export interface NavbarProps {
   brandTitle?: string;
   links?: Array<{ href: string; label: string; active?: boolean }>;
   rightSlot?: React.ReactNode;
+  adminHref?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -16,6 +17,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   brandTitle = 'Tech Inject',
   links = [],
   rightSlot,
+  adminHref = 'http://localhost:3002',
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
@@ -80,7 +82,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               {user.role === 'ADMIN' && (
                 <a
-                  href="/admin"
+                  href={adminHref}
                   className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-xs font-medium text-indigo-300 hover:bg-indigo-500/20 transition-colors"
                 >
                   <Shield className="w-3.5 h-3.5" />

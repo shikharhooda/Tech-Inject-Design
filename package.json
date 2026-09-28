@@ -11,7 +11,7 @@
     "dev:catalogue": "npm run dev --workspace=@tech-inject/catalogue",
     "dev:admin": "npm run dev --workspace=@tech-inject/admin",
     "dev:api": "npm run dev --workspace=@tech-inject/api",
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspaces --if-present",
     "test": "vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

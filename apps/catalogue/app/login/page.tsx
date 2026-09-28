@@ -20,11 +20,7 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (res.success && res.data?.user) {
-      if (res.data.user.role === 'ADMIN') {
-        window.location.href = 'http://localhost:3002/dashboard';
-      } else {
-        window.location.href = '/account';
-      }
+      window.location.href = '/components';
     } else {
       setError(res.error || 'Invalid email or password');
     }

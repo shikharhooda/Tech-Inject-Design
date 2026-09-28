@@ -11,6 +11,22 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      if (urlToken) {
+        localStorage.setItem('tech_inject_admin_token', urlToken);
+        localStorage.setItem('tech_inject_token', urlToken);
+      }
+      AdminApi.getMe().then((res) => {
+        if (res.success && res.data?.user && res.data.user.role === 'ADMIN') {
+          window.location.href = '/dashboard';
+        }
+      });
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);

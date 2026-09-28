@@ -32,6 +32,9 @@ export async function fetchApi<T>(
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
+      if (res.status === 401 && typeof window !== 'undefined') {
+        localStorage.removeItem('tech_inject_token');
+      }
       return {
         success: false,
         error: data.error || `HTTP ${res.status}: ${res.statusText}`,
@@ -69,6 +72,9 @@ export const CatalogueApi = {
   },
 
   getMe: async () => {
+    if (typeof window !== 'undefined' && !localStorage.getItem('tech_inject_token')) {
+      return { success: false, error: 'Unauthenticated' };
+    }
     return fetchApi<{ user: UserDto }>('/api/auth/me');
   },
 

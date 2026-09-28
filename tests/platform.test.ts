@@ -7,6 +7,7 @@ import { generateLicenseKey, hashLicenseKey } from '../apps/api/lib/license';
 import { componentBundleSchema } from '../packages/validation/src';
 import { prisma } from '../apps/api/lib/prisma';
 import { ComponentService } from '../apps/api/lib/component-service';
+import { seedDatabase } from '../prisma/seed';
 
 describe('Tech Inject Design Library - Core Platform Verification', () => {
   let adminUserId = '';
@@ -127,6 +128,7 @@ describe('Tech Inject Design Library - Core Platform Verification', () => {
     await prisma.license.deleteMany();
     await prisma.component.deleteMany();
     await prisma.user.deleteMany();
+    await seedDatabase();
     await prisma.$disconnect();
   });
 

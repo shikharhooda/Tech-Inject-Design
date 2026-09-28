@@ -28,6 +28,17 @@ export function AdminLayoutWrapper({ children }: { children: React.ReactNode }) 
       return;
     }
 
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      if (urlToken) {
+        localStorage.setItem('tech_inject_admin_token', urlToken);
+        localStorage.setItem('tech_inject_token', urlToken);
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    }
+
     AdminApi.getMe().then((res) => {
       if (res.success && res.data?.user && res.data.user.role === 'ADMIN') {
         setUser(res.data.user);

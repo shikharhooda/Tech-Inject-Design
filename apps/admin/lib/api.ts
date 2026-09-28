@@ -36,6 +36,10 @@ export async function fetchAdminApi<T>(
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
+      if (res.status === 401 && typeof window !== 'undefined') {
+        localStorage.removeItem('tech_inject_admin_token');
+        localStorage.removeItem('tech_inject_token');
+      }
       return {
         success: false,
         error: data.error || `HTTP ${res.status}: ${res.statusText}`,
@@ -72,6 +76,13 @@ export const AdminApi = {
   },
 
   getMe: async () => {
+    if (
+      typeof window !== 'undefined' &&
+      !localStorage.getItem('tech_inject_admin_token') &&
+      !localStorage.getItem('tech_inject_token')
+    ) {
+      return { success: false, error: 'Unauthenticated' };
+    }
     return fetchAdminApi<{ user: UserDto }>('/api/auth/me');
   },
 

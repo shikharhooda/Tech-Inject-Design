@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import { getOptionalUser } from '@/lib/auth';
 import { jsonSuccess, jsonError } from '@/lib/response';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   try {
     const user = await getOptionalUser(req);

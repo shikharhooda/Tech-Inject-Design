@@ -12,7 +12,7 @@ function hashLicense(rawKey: string): string {
   return crypto.createHmac('sha256', LICENSE_SECRET).update(rawKey.trim().toUpperCase()).digest('hex');
 }
 
-async function main() {
+export async function seedDatabase() {
   console.log('🌱 Starting Tech Inject Design Library database seed...');
 
   // Clean existing tables (in proper order for foreign keys)
@@ -740,11 +740,13 @@ export const PricingToggle: React.FC<PricingToggleProps> = ({ isAnnual, onChange
   console.log('✅ Database seed completed successfully!');
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Error during seed:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+if (process.argv[1]?.includes('seed.ts') || process.argv[1]?.includes('seed.js')) {
+  seedDatabase()
+    .catch((e) => {
+      console.error('❌ Error during seed:', e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
