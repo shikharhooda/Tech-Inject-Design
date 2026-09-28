@@ -1,0 +1,21 @@
+{
+  "name": "tech-inject",
+  "version": "1.0.0",
+  "description": "CLI component installer for Tech Inject Design Library",
+  "main": "dist/index.js",
+  "bin": {
+    "tech-inject": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "typescript": "^5.6.3"
+  }
+}

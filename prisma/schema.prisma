@@ -1,0 +1,94 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum Access {
+  FREE
+  PREMIUM
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum LicenseStatus {
+  ACTIVE
+  REVOKED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(CUSTOMER)
+  premiumAccess Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  licenses      License[]
+
+  @@map("users")
+}
+
+model Component {
+  id              String             @id @default(cuid())
+  name            String
+  slug            String             @unique
+  description     String
+  category        String
+  version         String
+  access          Access             @default(FREE)
+  status          Status             @default(DRAFT)
+  props           Json               @default("[]")
+  usage           String             @db.Text
+  dependencies    Json               @default("[]")
+  previewData     Json               @default("{}")
+  sourceReference String?
+  agentPrompt     String             @db.Text
+  installCommand  String
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  publishedAt     DateTime?
+  versions        ComponentVersion[]
+
+  @@map("components")
+}
+
+model License {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licenseKeyHash String        @unique
+  status         LicenseStatus @default(ACTIVE)
+  createdAt      DateTime      @default(now())
+  expiresAt      DateTime?
+  revokedAt      DateTime?
+
+  @@map("licenses")
+}
+
+model ComponentVersion {
+  id           String    @id @default(cuid())
+  componentId  String
+  component    Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+  version      String
+  source       String    @db.Text
+  previewData  Json      @default("{}")
+  dependencies Json      @default("[]")
+  installData  Json      @default("{}")
+  agentPrompt  String    @db.Text
+  createdAt    DateTime  @default(now())
+
+  @@map("component_versions")
+}
