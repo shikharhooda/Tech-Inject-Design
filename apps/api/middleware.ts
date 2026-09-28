@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 const ALLOWED_ORIGINS = [
   "https://tech-inject-design-catalogue.vercel.app",
-  // Add your Admin Vercel URL here if it is different.
-  // "https://your-admin-url.vercel.app",
+  "https://tech-inject-design-admin.vercel.app",
 
   // Local development
   "http://localhost:3000",
   "http://localhost:3001",
 ];
+
 
 export function middleware(req: NextRequest) {
   const origin = req.headers.get("origin");

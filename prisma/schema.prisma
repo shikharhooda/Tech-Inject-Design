@@ -1,31 +1,10 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
-  CUSTOMER
-  ADMIN
-}
-
-enum Access {
-  FREE
-  PREMIUM
-}
-
-enum Status {
-  DRAFT
-  PUBLISHED
-  UNPUBLISHED
-}
-
-enum LicenseStatus {
-  ACTIVE
-  REVOKED
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -51,11 +30,11 @@ model Component {
   access          Access             @default(FREE)
   status          Status             @default(DRAFT)
   props           Json               @default("[]")
-  usage           String             @db.Text
+  usage           String
   dependencies    Json               @default("[]")
   previewData     Json               @default("{}")
   sourceReference String?
-  agentPrompt     String             @db.Text
+  agentPrompt     String
   installCommand  String
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
@@ -68,12 +47,12 @@ model Component {
 model License {
   id             String        @id @default(cuid())
   userId         String
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   licenseKeyHash String        @unique
   status         LicenseStatus @default(ACTIVE)
   createdAt      DateTime      @default(now())
   expiresAt      DateTime?
   revokedAt      DateTime?
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("licenses")
 }
@@ -81,14 +60,35 @@ model License {
 model ComponentVersion {
   id           String    @id @default(cuid())
   componentId  String
-  component    Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
   version      String
-  source       String    @db.Text
+  source       String
   previewData  Json      @default("{}")
   dependencies Json      @default("[]")
   installData  Json      @default("{}")
-  agentPrompt  String    @db.Text
+  agentPrompt  String
   createdAt    DateTime  @default(now())
+  component    Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
 
   @@map("component_versions")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum Access {
+  FREE
+  PREMIUM
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+  UNPUBLISHED
+}
+
+enum LicenseStatus {
+  ACTIVE
+  REVOKED
 }
